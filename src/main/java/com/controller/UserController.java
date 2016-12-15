@@ -7,16 +7,18 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.PrintWriter;
 import java.util.List;
 
 /**
  * Created by BGClassTeacher on 08.12.2016.
  */
+@WebServlet(urlPatterns = "/users")
 public class UserController extends HttpServlet {
     @Autowired
     private UserService userService;
@@ -32,25 +34,32 @@ public class UserController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+        User user = new User();
+        user.setLogin(req.getParameter("login"));
+        user.setSurname(req.getParameter("surname"));
+        user.setName(req.getParameter("name"));
+        user.setAge(Integer.valueOf(req.getParameter("age")));
+        user.setPhone(req.getParameter("phone"));
+        user.setEmail(req.getParameter("email"));
+        user.setAddress(req.getParameter("address"));
+        user.setPassword(req.getParameter("password"));
+        userService.addUser(user);
+        PrintWriter writer = resp.getWriter();
+        writer.println("Your account was successfully created!");
+        writer.println("===========================");
+        writer.println("List of all users:");
+        List<User> userNameList = userService.getAllUsers();
+        for (User userFromList : userNameList) {
+            writer.println(userFromList);
+        }
+        writer.println("==============================");
+        writer.flush();
+        writer.close();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-         String flag = null;
-         String username = (String)req.getParameter("name");
-         String password = (String)req.getParameter("password");
-         flag = userService.validateUserCredentials(username,password);
-         if (flag.equals("OK")) {
-             resp.getWriter().println("<!DOCTYPE HTML>");
-             resp.getWriter().println("<html><body><center><p>" + "Access granted!" + "</p></center></body></html>");
-         } else if (flag.equals("login")) {
-             resp.getWriter().println("<!DOCTYPE HTML>");
-             resp.getWriter().println("<html><body><center><p>" + "Access denied! Wrong login!" + "</p></center></body></html>");
-         } else {
-             resp.getWriter().println("<!DOCTYPE HTML>");
-             resp.getWriter().println("<html><body><center><p>" + "Access denied! Wrong password!" + "</p></center></body></html>");
-         }
     }
+
 }
 

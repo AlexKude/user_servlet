@@ -4,9 +4,6 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 		  http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
-    <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
-    </welcome-file-list>
     <context-param>
         <param-name>applicationContext</param-name>
         <param-value>/WEB-INF/applicationContext.xml</param-value>
@@ -14,12 +11,5 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
-    <servlet>
-        <servlet-name>userManagerController</servlet-name>
-        <servlet-class>com.controller.UserController</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>userManagerController</servlet-name>
-        <url-pattern>/userManagerController</url-pattern>
-    </servlet-mapping>
+
 </web-app>

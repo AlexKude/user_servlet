@@ -24,11 +24,17 @@ public class UserServiceImpl implements UserService {
         this.userDao = userDao;
     }
 
-    public String validateUserCredentials(String name,String userPassword){
-        String validPassword = userDao.getUserCredentials(name);
-        if (validPassword == null) return "login";
-        if(userPassword.equals(validPassword)) return "OK";
-        return "password";
+    public void addUser(User newUser){
+
+        userDao.getUserList().add(newUser);
+
     }
+
+    public List<User> getAllUsers(){
+        return userDao.getUserList();
+    }
+
+
+
 }
 
