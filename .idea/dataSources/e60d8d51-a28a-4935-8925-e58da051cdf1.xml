@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="PostgreSQL - User@localhost">
+  <database-model serializer="dbm" rdbms="POSTGRES" format-version="2.6">
+    <database id="1" name="User">
+      <visible>1</visible>
+    </database>
+    <schema id="2" parent="1" name="public">
+      <visible>1</visible>
+    </schema>
+    <schema id="3" parent="1" name="information_schema"/>
+    <schema id="4" parent="1" name="pg_catalog"/>
+    <schema id="5" parent="1" name="user_account">
+      <visible>1</visible>
+    </schema>
+    <schema id="6" parent="1" name="userRepo"/>
+    <sequence id="7" parent="5" name="users_id_seq"/>
+    <table id="8" parent="5" name="users"/>
+    <column id="9" parent="8" name="id">
+      <mandatory>1</mandatory>
+      <data-type>serial(10)|4</data-type>
+      <sequence-identity>1</sequence-identity>
+      <default-expression>nextval(&apos;user_account.users_id_seq&apos;::regclass)</default-expression>
+    </column>
+    <column id="10" parent="8" name="login">
+      <mandatory>1</mandatory>
+      <data-type>varchar(20)|12</data-type>
+    </column>
+    <column id="11" parent="8" name="surname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(20)|12</data-type>
+    </column>
+    <column id="12" parent="8" name="name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(20)|12</data-type>
+    </column>
+    <column id="13" parent="8" name="age">
+      <data-type>int4(10)|4</data-type>
+    </column>
+    <column id="14" parent="8" name="phone">
+      <data-type>varchar(20)|12</data-type>
+    </column>
+    <column id="15" parent="8" name="email">
+      <data-type>varchar(20)|12</data-type>
+    </column>
+    <column id="16" parent="8" name="address">
+      <data-type>varchar(100)|12</data-type>
+    </column>
+    <column id="17" parent="8" name="password">
+      <mandatory>1</mandatory>
+      <data-type>varchar(20)|12</data-type>
+    </column>
+  </database-model>
+</dataSource>

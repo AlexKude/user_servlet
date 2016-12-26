@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by BGClassTeacher on 08.12.2016.
  */
-@WebServlet(urlPatterns = "/users")
+@WebServlet(urlPatterns = "/users", asyncSupported = true)
 public class UserController extends HttpServlet {
     @Autowired
     private UserService userService;
@@ -34,27 +34,49 @@ public class UserController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = new User();
-        user.setLogin(req.getParameter("login"));
-        user.setSurname(req.getParameter("surname"));
-        user.setName(req.getParameter("name"));
-        user.setAge(Integer.valueOf(req.getParameter("age")));
-        user.setPhone(req.getParameter("phone"));
-        user.setEmail(req.getParameter("email"));
-        user.setAddress(req.getParameter("address"));
-        user.setPassword(req.getParameter("password"));
-        userService.addUser(user);
+        String login = req.getParameter("login");
+        String surname = req.getParameter("surname");
+        String name = req.getParameter("name");
+        Integer age = Integer.valueOf(req.getParameter("age"));
+        String phone = req.getParameter("phone");
+        String email = req.getParameter("email");
+        String address = req.getParameter("address");
+        String password = req.getParameter("password2");
+
+        if (login!= null && surname!= null && name!= null && age!= null &&
+                phone!= null && email!= null && address!= null && password!= null) {
+            User user = new User(login, surname, name, age, phone, email, address, password);
+            userService.addUser(user);
+            userWasCreateSuccess(resp);
+        } else {
+            errorMsg(resp, "Something went wrong! Please try again!");
+        }
+    }
+
+    private void userWasCreateSuccess(HttpServletResponse resp) throws IOException {
         PrintWriter writer = resp.getWriter();
-        writer.println("Your account was successfully created!");
-        writer.println("===========================");
-        writer.println("List of all users:");
+            writer.println("Your account was successfully created!");
+            writer.println("===========================");
+            writer.println("List of all users:");
+
         List<User> userNameList = userService.getAllUsers();
         for (User userFromList : userNameList) {
             writer.println(userFromList);
         }
-        writer.println("==============================");
-        writer.flush();
-        writer.close();
+            writer.println("==============================");
+            writer.flush();
+            writer.close();
+    }
+
+    private void errorMsg(HttpServletResponse resp, String message) throws IOException {
+        resp.setContentType("text/html;charset=UTF-8");
+        PrintWriter writer = resp.getWriter();
+            writer.print("<!DOCTYPE HTML>");
+            writer.print("<html><body><center>");
+            writer.print("<p>" + message + "</p>");
+            writer.print("<p><a href=\"index.jsp\">OK</a></p>");
+            writer.print("<center><body><html>");
+            writer.flush();
     }
 
     @Override

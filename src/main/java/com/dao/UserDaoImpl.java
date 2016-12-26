@@ -4,7 +4,9 @@ import com.model.User;
 import org.springframework.stereotype.Repository;
 
 
-import java.util.ArrayList;
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
 import java.util.List;
 
 
@@ -14,15 +16,21 @@ import java.util.List;
 @Repository("userDao")
 public class UserDaoImpl implements UserDao {
 
-    public List<User> userList = new ArrayList<User>();
-
+    EntityManager manager = Persistence.createEntityManagerFactory("NewPersistenceUnit").createEntityManager();
 
     public List<User> getUserList() {
-        return userList;
+        manager.getTransaction().begin();
+        Query nativeQuery = manager.createNativeQuery("SELECT * FROM user_account.users", User.class);
+        manager.getTransaction().commit();
+        List<User> resultList = nativeQuery.getResultList();
+        return resultList;
     }
 
-    public void setUserList(List<User> userList) {
-        this.userList = userList;
+    public void addUser(User user) {
+        manager.getTransaction().begin();
+        manager.merge(user);
+        manager.getTransaction().commit();
     }
+
 }
 

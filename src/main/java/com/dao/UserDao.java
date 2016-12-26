@@ -11,6 +11,6 @@ public interface UserDao {
 
     public List<User> getUserList();
 
-    public void setUserList(List<User> userList);
+    public void addUser(User user);
 
 }

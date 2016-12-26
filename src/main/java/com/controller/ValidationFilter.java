@@ -17,7 +17,7 @@ import java.util.Properties;
 /**
  * Created by Main Server on 14.12.2016.
  */
-@WebFilter(urlPatterns = "/users/*")
+@WebFilter(urlPatterns = "/users/*", asyncSupported = true)
 public class ValidationFilter implements Filter {
 
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -27,6 +27,8 @@ public class ValidationFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
 
         String login = req.getParameter("login");
+        String pin_from_property = null;
+
         if (!StringUtils.isEmpty(login)) {
             if (!login.matches("\\w{4,10}")) {
                 errorMsg(resp, "Wrong Login format! Please write only figures and letters!");
@@ -70,13 +72,13 @@ public class ValidationFilter implements Filter {
             }
             String pin = req.getParameter("pin");
             if (!StringUtils.isEmpty(pin)) {
-                InputStream resourceAsStream =
-                        ValidationFilter.class.getClassLoader().
-                                getResourceAsStream("pinCode.properties");
-                Properties properties = new Properties();
-                properties.load(resourceAsStream);
-                String pin_from_property = properties.getProperty("pin");
-                resourceAsStream.close();
+                try (InputStream resourceAsStream =
+                             ValidationFilter.class.getClassLoader().
+                                     getResourceAsStream("pinCode.properties")) {
+                    Properties properties = new Properties();
+                    properties.load(resourceAsStream);
+                    pin_from_property = properties.getProperty("pin");
+                }
                 if (!pin.equals(pin_from_property)) {
                     errorMsg(resp, "You Pin Code is not valid. Please contact Provider for valid Pin Code");
                     return;
@@ -95,12 +97,12 @@ public class ValidationFilter implements Filter {
     private void errorMsg(ServletResponse resp, String message) throws IOException {
         resp.setContentType("text/html;charset=UTF-8");
         PrintWriter writer = resp.getWriter();
-        writer.print("<!DOCTYPE HTML>");
-        writer.print("<html><body><center>");
-        writer.print("<p>" + message + "</p>");
-        writer.print("<p><a href=\"index.jsp\">OK</a></p>");
-        writer.print("<center><body><html>");
-        writer.flush();
+            writer.print("<!DOCTYPE HTML>");
+            writer.print("<html><body><center>");
+            writer.print("<p>" + message + "</p>");
+            writer.print("<p><a href=\"index.jsp\">OK</a></p>");
+            writer.print("<center><body><html>");
+            writer.flush();
     }
 
 
